@@ -147,6 +147,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_limiterHold;
     float m_limiterRelease;
 
+    // if set volume events generate notifications but do not change device volume levels
+    bool m_volumePassthrough;
+
     bool  m_omxHWAudioDecode;
     bool  m_omxDecodeStartWithValidFrame;
 

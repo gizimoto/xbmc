@@ -114,6 +114,10 @@ void CAdvancedSettings::Initialize()
   m_limiterHold = 0.025f;
   m_limiterRelease = 0.1f;
 
+  //pass through volume events to notification system for external receiver handling of all volume changes
+  // if enabled volume actions emit a notification only and do not adjust system volume levels
+  m_volumePassthrough = false;
+
   m_seekSteps = { 10, 30, 60, 180, 300, 600, 1800 };
 
   m_omxHWAudioDecode = false;
@@ -467,6 +471,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
+
+    // volume passthrough option, if set volume events are sent as notifications only, device volume remains unchanged
+    XMLUtils::GetBoolean(pElement, "volumepassthrough", m_volumePassthrough);
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_musicUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_musicTimeSeekForward, 0, 6000);

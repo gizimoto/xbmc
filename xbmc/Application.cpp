@@ -2418,7 +2418,7 @@ bool CApplication::OnAction(const CAction &action)
   // Check for global volume control
   if ((action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN) || action.GetID() == ACTION_VOLUME_SET))
   {
-    if (!m_pPlayer->IsPassthrough())
+    if (!m_pPlayer->IsPassthrough() || g_advancedSettings.m_volumePassthrough)
     {
       if (m_muted)
         UnMute();
@@ -4504,7 +4504,8 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
   m_volumeLevel = hardwareVolume;
 
-  CAEFactory::SetVolume(hardwareVolume);
+  if (!g_advancedSettings.m_volumePassthrough)
+    CAEFactory::SetVolume(hardwareVolume);
 }
 
 float CApplication::GetVolume(bool percentage /* = true */) const
@@ -4526,7 +4527,8 @@ void CApplication::VolumeChanged() const
   CAnnouncementManager::Get().Announce(Application, "xbmc", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
-  if (m_pPlayer->ControlsVolume())
+  // only if not volume not in passthrough mode
+  if (m_pPlayer->ControlsVolume() && !g_advancedSettings.m_volumePassthrough)
   {
      m_pPlayer->SetVolume(m_volumeLevel);
      m_pPlayer->SetMute(m_muted);
